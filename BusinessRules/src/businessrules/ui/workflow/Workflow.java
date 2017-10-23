@@ -1,0 +1,13 @@
+package businessrules.ui.workflow;
+
+public class Workflow {
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+}
