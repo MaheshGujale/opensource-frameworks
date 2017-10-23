@@ -1,0 +1,7 @@
+1. User should be able to define the business rule through GUI interface - eclipse Graphiti UI to define business rule.
+	Two types of business rule - preScreening and postProcessing of transaction. preScreening validates the incoming transaction and postProcessing changes the transaction according to rule.
+	a. business rule should be defined in transactional context.
+	b. constraints on defining rule. constraint could be result of previous rule.
+	b. business rule should have version and validity period - start and end time.
+	c. business rule should be deployed with no downtime. 
+2. Rest API to invoke business rule system. Two Rest API - preScreening and postProcessing
