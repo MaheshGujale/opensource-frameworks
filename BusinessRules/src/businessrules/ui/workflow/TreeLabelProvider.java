@@ -13,9 +13,9 @@ public class TreeLabelProvider implements ILabelProvider {
 	public Image getImage(Object element) {
 		String imageName = "";
 		if (element instanceof String) {
-			imageName = "icon_node.gif";
+			imageName = "workflow.png";
 		} else if (element instanceof Workflow) {
-			imageName = "icon_node_name.gif";
+			imageName = "workflow_name.png";
 		}
 		Image image = Activator.getImageDescriptor(UIConstants.imgdir + imageName).createImage();
 		return image;

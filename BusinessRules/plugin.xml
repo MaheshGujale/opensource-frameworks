@@ -27,7 +27,7 @@
             name="Business Rules">
          <property
                name="windowImages"
-               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+               value="icons/business_rules_16.png,icons/business_rules_32.png">
          </property>
       </product>
    </extension>
