@@ -18,7 +18,6 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
-import com.sun.xml.internal.ws.api.message.Message;
 import com.thoughtworks.xstream.XStream;
 
 import businessrules.ui.workflow.common.emf.model.Workflow.EBaseStep;
@@ -362,7 +361,7 @@ public class WorkflowUtil {
 
 		stream.alias("BusinessRuleInfo", BusinessRuleInfo.class);
 		stream.alias("FieldInfo", FieldInfo.class);
-		stream.alias("Message", Message.class);
+		//stream.alias("Message", Message.class);
 		stream.alias("CodeDetail", CodeDetail.class);
 
 		return stream;

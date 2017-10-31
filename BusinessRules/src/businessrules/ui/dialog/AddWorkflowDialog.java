@@ -31,6 +31,7 @@ public class AddWorkflowDialog extends TitleAreaDialog {
 
 	public AddWorkflowDialog(Shell parentShell, String jobName) {
 		super(parentShell);
+		setHelpAvailable(false);
 		this.workflowName = jobName;
 		setShellStyle(getShellStyle());
 	}
@@ -116,7 +117,9 @@ public class AddWorkflowDialog extends TitleAreaDialog {
 							}
 							Workflow workflow = new Workflow();
 							workflow.setName(txtWorkflowName.getText().trim());
-
+							
+							workflow.save();
+							
 							MessageDialog.openInformation(parent.getShell(), "Information", "'"
 									+ txtWorkflowName.getText().trim() + "' workflow has been saved successfully");
 							returnCode = Window.OK;

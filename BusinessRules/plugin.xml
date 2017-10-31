@@ -72,7 +72,7 @@
             default="true"
             extensions="rules"
             id="businessrules.ui.workflow.editor.BusinessRuleEditor"
-            name="BusinessRule Editor">
+            name="Workflow">
       </editor>
    </extension>
    <extension
@@ -83,6 +83,26 @@
             name="Workflow Details"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypes">
+      <diagramType
+            id="businessrules.ui.workflow.BizFlowDiagramType"
+            name="Workflow"
+            type="Workflow">
+      </diagramType>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypeProviders">
+      <diagramTypeProvider
+            class="businessrules.ui.workflow.BizFlowDiagramTypeProvider"
+            context="org.eclipse.graphiti.ui.diagramEditor"
+            id="businessrules.ui.workflow.BizFlowDiagramTypeProvider"
+            name="Workflow DiagramTypeProvider">
+             <diagramType
+        id="businessrules.ui.workflow.BizFlowDiagramType">
+      </diagramType>
+      </diagramTypeProvider>
    </extension>
 
 </plugin>

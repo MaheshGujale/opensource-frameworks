@@ -18,7 +18,7 @@ public class ImageProvider extends AbstractImageProvider implements IImageProvid
 
 	@Override
 	protected void addAvailableImages() {
-		addImageFilePath(ICON_STEP_START, "icons/icon_step_start.png");
+		addImageFilePath(ICON_STEP_START, "./icons/icon_step_start.png");
 		addImageFilePath(ICON_STEP_STOP, "icons/icon_step_stop.png");
 		addImageFilePath(ICON_STEP_DECISION, "icons/icon_step_decision.png");
 		addImageFilePath(ICON_STEP_ACTIVITY, "icons/icon_step_activity.png");
