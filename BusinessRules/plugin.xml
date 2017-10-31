@@ -102,7 +102,17 @@
              <diagramType
         id="businessrules.ui.workflow.BizFlowDiagramType">
       </diagramType>
+      <imageProvider
+            id="businessrules.ui.workflow.ImageProvider">
+      </imageProvider>
       </diagramTypeProvider>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.imageProviders">
+      <imageProvider
+            class="businessrules.ui.workflow.ImageProvider"
+            id="businessrules.ui.workflow.ImageProvider">
+      </imageProvider>
    </extension>
 
 </plugin>

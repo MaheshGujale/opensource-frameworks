@@ -82,7 +82,7 @@ public class ConditionalConnectorCreateFeature extends AbstractCreateConnectionF
 
 	@Override
 	public String getLabel() {
-		return "Connectors";
+		return "Links";
 	}
 
 	@Override

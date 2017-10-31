@@ -35,6 +35,8 @@ import businessrules.ui.features.PropertyCustomFeature;
 import businessrules.ui.features.StartAddShapeFeature;
 import businessrules.ui.features.StartCreateShapeFeature;
 import businessrules.ui.features.UpdateFeature;
+import businessrules.ui.features.businessrule.BusinessRuleAddShapeFeature;
+import businessrules.ui.features.businessrule.BusinessRuleCreateShapeFeature;
 import businessrules.ui.features.connector.ConditionalConnectorAddFeature;
 import businessrules.ui.features.connector.ConditionalConnectorCreateFeature;
 import businessrules.ui.features.connector.ConnectorAddFeature;
@@ -51,18 +53,18 @@ public class BizFlowFeatureProvider extends DefaultFeatureProvider {
 	StartAddShapeFeature startAddShapeFeature = new StartAddShapeFeature(this);
 	ConnectorAddFeature connectorAddFeature = new ConnectorAddFeature(this);
 	ConditionalConnectorAddFeature conditionalConnectorAddFeature = new ConditionalConnectorAddFeature(this);
+	BusinessRuleAddShapeFeature businessRuleAddShapeFeature = new BusinessRuleAddShapeFeature(this);
 /*	DecisionAddShapeFeature decisionAddShapeFeature = new DecisionAddShapeFeature(this);
 	ActivityAddShapeFeature activityAddShapeFeature = new ActivityAddShapeFeature(this);
-	BusinessRuleAddShapeFeature businessRuleAddShapeFeature = new BusinessRuleAddShapeFeature(this);
 */
 	public BizFlowFeatureProvider(IDiagramTypeProvider dtp) {
 		super(dtp);
 		modelFeatures.put(DiagramTypeConstants.const_StartEvent, startAddShapeFeature);
 		modelFeatures.put(DiagramTypeConstants.Const_Connector, connectorAddFeature);
 		modelFeatures.put(DiagramTypeConstants.Const_ConditionalConnector, conditionalConnectorAddFeature);
+		modelFeatures.put(DiagramTypeConstants.Const_BusinessRule_BussinessAction, businessRuleAddShapeFeature);
 /*		modelFeatures.put(DiagramTypeConstants.Const_Decision_BussinessAction, decisionAddShapeFeature);
 		modelFeatures.put(DiagramTypeConstants.Const_Activity_BussinessAction, activityAddShapeFeature);
-		modelFeatures.put(DiagramTypeConstants.Const_BusinessRule_BussinessAction, businessRuleAddShapeFeature);
 */	}
 
 	@Override
@@ -85,10 +87,10 @@ public class BizFlowFeatureProvider extends DefaultFeatureProvider {
 				if (diagramType.equals(DiagramTypeConstants.Const_Activity_BussinessAction)) {
 					return activityAddShapeFeature;
 				}
-				if (diagramType.equals(DiagramTypeConstants.Const_BusinessRule_BussinessAction)) {
+*/				if (diagramType.equals(DiagramTypeConstants.Const_BusinessRule_BussinessAction)) {
 					return businessRuleAddShapeFeature;
 				}
-*/			}
+			}
 		}
 		return super.getAddFeature(context);
 	}
@@ -97,8 +99,8 @@ public class BizFlowFeatureProvider extends DefaultFeatureProvider {
 	public ICreateFeature[] getCreateFeatures() {
 		return new ICreateFeature[] { new StartCreateShapeFeature(this, "Start", "Start")/*,
 				new DecisionCreateShapeFeature(this, "Decision", "Decision"),
-				new ActivityCreateShapeFeature(this, "Activity", "Activity"),
-				new BusinessRuleCreateShapeFeature(this, "BusinessRule", "BusinessRule")*/};
+				new ActivityCreateShapeFeature(this, "Activity", "Activity")*/,
+				new BusinessRuleCreateShapeFeature(this, "BusinessRule", "BusinessRule")};
 	}
 
 	@Override

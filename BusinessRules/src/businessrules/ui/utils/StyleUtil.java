@@ -18,8 +18,10 @@ public class StyleUtil {
 	private static final String TEXT_ID = "E-CLASS-TEXT";
 
 	public static final IColorConstant CLASS_TEXT_FOREGROUND = IColorConstant.BLACK;
-	public static final IColorConstant CLASS_FOREGROUND = new ColorConstant(116, 143, 165);
-	public static final IColorConstant CLASS_BACKGROUND = new ColorConstant(220, 233, 255);
+	private static final IColorConstant CLASS_FOREGROUND = new ColorConstant(255, 102, 0);
+	private static final IColorConstant CLASS_BACKGROUND = new ColorConstant(255, 204, 153);
+	//public static final IColorConstant CLASS_FOREGROUND = new ColorConstant(116, 143, 165);
+	//public static final IColorConstant CLASS_BACKGROUND = new ColorConstant(220, 233, 255);
 
 	public static Style getStyleForClass(Diagram diagram) {
 		Style s = findStyle(diagram, CLASS_ID);
@@ -63,7 +65,7 @@ public class StyleUtil {
 		IGaService gaService = Graphiti.getGaService();
 		shape.setStyle(StyleUtil.getStyleForClass(feature.getFeatureProvider().getDiagramTypeProvider().getDiagram()));
 		shape.setFilled(true);
-		AdaptedGradientColoredAreas gradient = PredefinedColoredAreas.getBlueWhiteAdaptions();
+		AdaptedGradientColoredAreas gradient = PredefinedColoredAreas.getCopperWhiteGlossAdaptions();
 		gaService.setRenderingStyle(shape, gradient);
 	}
 }

@@ -83,7 +83,7 @@ public class ConnectorCreateFeature extends AbstractCreateConnectionFeature impl
 
 	@Override
 	public String getLabel() {
-		return "Connectors";
+		return "Links";
 	}
 
 	@Override
