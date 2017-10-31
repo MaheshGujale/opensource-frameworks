@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="businessrules.intro.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="businessrules.intro.Perspective"
+            id="BusinessRules.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="BusinessRules.application"
+            name="Business Rules">
+         <property
+               name="windowImages"
+               value="icons/business_rules_16.png,icons/business_rules_32.png">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="businessrules.intro">
+      </intro>
+      <introProductBinding
+            introId="businessrules.intro"
+            productId="BusinessRules.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            introId="businessrules.intro"
+            content="introContent.xml"
+            id="BusinessRules.configId">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated workflow -->
+      <package
+            uri="www.opussoft.com"
+            class="businessrules.ui.workflow.common.emf.model.Workflow.EWorkflowPackage"
+            genModel="src/resources/workflow.genmodel"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="businessrules.ui.editor.BusinessRuleEditorPart"
+            default="true"
+            extensions="rules"
+            id="businessrules.ui.workflow.editor.BusinessRuleEditor"
+            name="Workflow">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="businessrules.ui.views.WorkflowView"
+            id="BusinessRules.workflow.view"
+            name="Workflow Details"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypes">
+      <diagramType
+            id="businessrules.ui.workflow.BizFlowDiagramType"
+            name="Workflow"
+            type="Workflow">
+      </diagramType>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypeProviders">
+      <diagramTypeProvider
+            class="businessrules.ui.workflow.BizFlowDiagramTypeProvider"
+            context="org.eclipse.graphiti.ui.diagramEditor"
+            id="businessrules.ui.workflow.BizFlowDiagramTypeProvider"
+            name="Workflow DiagramTypeProvider">
+             <diagramType
+        id="businessrules.ui.workflow.BizFlowDiagramType">
+      </diagramType>
+      </diagramTypeProvider>
+   </extension>
+
+</plugin>
