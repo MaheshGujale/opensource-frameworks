@@ -159,7 +159,7 @@ public class WorkflowView extends ViewPart {
 			Workflow workflow = (Workflow) data;
 			AddWorkflowDialog workflowDialog = new AddWorkflowDialog(getSite().getShell(), null);
 			if (workflowDialog.open() == Window.OK) {
-				
+				treeViewer.refresh();
 			}
 			break;
 		}

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.internal.resources.BuildConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -25,6 +24,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.URIConverter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.graphiti.examples.common.FileService;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
@@ -46,7 +47,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.FileEditorInput;
 
-import com.sun.xml.internal.ws.api.message.Message;
 import com.thoughtworks.xstream.XStream;
 
 import businessrules.Activator;
@@ -128,17 +128,34 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		BizflowContent bizflowContent = null;
 		URI currentURI = null;
-		BuildConfiguration buildConfiguration = null;
 		IFile file = null;
+		DiagramEditorInput diagramInput = null;
 		BusinessRuleEditorInput bruleInput = (BusinessRuleEditorInput) input;
+		
+		setPartName(bruleInput.getName() + " (Workflow)");
+		
+		String workflowFileName = bruleInput.getWorkflow().getWorkflowConfigFile();
+		if(!new File(workflowFileName).exists()) {
+			Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow",
+					bruleInput.getName() + " (Workflow)", false);
+			
+			URI uri = URI.createFileURI(workflowFileName);
+			
+			FileService.createEmfFileForDiagram(uri, diagram);
 
-		URI uri1 = URI.createFileURI(bruleInput.getName());
-		Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName() + " (Workflow)",
-				false);
-		String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
-		input = new DiagramEditorInput(uri1, providerId);
+			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
+			diagramInput = new DiagramEditorInput(EcoreUtil.getURI(diagram), providerId);
+		} else {
+			URI uri1 = URI.createFileURI(bruleInput.getName());
+			Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName() + " (Workflow)",
+					false);
+			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
+			diagramInput = new DiagramEditorInput(uri1, providerId);
+		}
 
-		if (input instanceof FileEditorInput) {
+		
+
+		/*if (input instanceof FileEditorInput) {
 			file = ((FileEditorInput) input).getFile();
 		} else if (input instanceof DiagramEditorInput) {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -149,8 +166,6 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 		try {
 			activeProject = file.getProject();
-			// buildConfiguration =
-			// ActiveProjectUtil.getConfiguration(activeProject);
 
 			java.net.URI uri = file.getLocationURI();
 			currentURI = URI.createURI(uri.toString());
@@ -193,29 +208,22 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 			input = new URIEditorInput(URI.createFileURI(newDiagramPath));
 		} catch (Exception e) {
-			if (buildConfiguration == null) {
-				throw new PartInitException(
-						"Bizflow diagram open failed because window preference of current project is not defined."
-								+ " Please provide preference in Windows --> Preferences --> Business Rule Settings.");
-			} else {
-				throw new PartInitException(e.getMessage());
-			}
-		}
+		}*/
 
-		super.init(site, input);
+		super.init(site, diagramInput);
 
-		BizFlowFeatureProvider featureProvider = ((BizFlowFeatureProvider) getDiagramTypeProvider()
+	/*	BizFlowFeatureProvider featureProvider = ((BizFlowFeatureProvider) getDiagramTypeProvider()
 				.getFeatureProvider());
 
 		featureProvider.setGroupName(activeProject.getName());
 
-		/*
+		
 		 * ExcelFormulaContentProvider.getInstance()
 		 * .setStaticImportClassNames(buildConfiguration.
 		 * getStaticImportClassNames());
 		 * ActiveProjectUtil.registerBuildConfig(activeProject,
 		 * buildConfiguration);
-		 */
+		 
 		URIConverter uriConverter = getEditingDomain().getResourceSet().getURIConverter();
 		InputStream inputStream = null;
 
@@ -237,7 +245,7 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 			} catch (IOException e) {
 				logger.error(e);
 			}
-		}
+		}*/
 
 		// listener to close all bizflow diagrams and bizflow compare
 		// editors before closing eclipse
@@ -386,7 +394,7 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 		stream.alias("BusinessRuleInfo", BusinessRuleInfo.class);
 		stream.alias("FieldInfo", FieldInfo.class);
-		stream.alias("Message", Message.class);
+		//stream.alias("Message", Message.class);
 		stream.alias("CodeDetail", CodeDetail.class);
 
 		return stream;

@@ -1,7 +1,12 @@
 package businessrules.ui.workflow;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+
+import businessrules.ui.utils.FileUtils;
+import businessrules.ui.utils.UIConstants;
 
 public class TreeContentProvider implements ITreeContentProvider {
 
@@ -11,7 +16,15 @@ public class TreeContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object parentElement) {
 		try {
 			if (parentElement instanceof String) {
-				// get all workflow files
+				List<String> allWorkflows = FileUtils.getAllFolders();
+				int size = allWorkflows.size();
+				Workflow[] workflow = new Workflow[size];
+				for(int index = 0; index < size ;index++) {
+					workflow[index] = new Workflow(allWorkflows.get(index));
+					workflow[index].setWorkflowConfigFile(UIConstants.datadir + allWorkflows.get(index) + "/"
+							+ allWorkflows.get(index) + ".diagram");
+				}
+				return workflow;
 			}
 		} catch (Exception e) {
 			return null;
