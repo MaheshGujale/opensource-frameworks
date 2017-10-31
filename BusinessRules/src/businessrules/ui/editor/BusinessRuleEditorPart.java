@@ -146,7 +146,7 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
 			diagramInput = new DiagramEditorInput(EcoreUtil.getURI(diagram), providerId);
 		} else {
-			URI uri1 = URI.createFileURI(bruleInput.getName());
+			URI uri1 = URI.createFileURI(workflowFileName);
 			Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName() + " (Workflow)",
 					false);
 			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
@@ -255,9 +255,6 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (diffView) {
-			return;
-		}
 		BizflowContent bizflowContent = new BizflowContent();
 		EList<Resource> resources = getDiagramBehavior().getResourceSet().getResources();
 		if (resources != null && resources.size() > 0) {

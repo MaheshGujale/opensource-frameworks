@@ -40,7 +40,7 @@ public class BusinessRuleEditorInput implements IEditorInput {
 
 	@Override
 	public String getToolTipText() {
-		return null;
+		return workflow.getName();
 	}
 
 	@Override
