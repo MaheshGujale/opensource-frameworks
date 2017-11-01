@@ -175,7 +175,7 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 			businessRulestep.setParameterInfos(dialog.getParameterInfo());
 			businessRulestep.setBusinessRuleInfos(dialog.getBusinessRuleInfos());
 
-			WorkflowUtil.refreshPictogramElement(getDiagramBehavior().getEditingDomain(), eBaseStep,
+			WorkflowUtil.refreshPictogramElement(getDiagramBehavior().getEditingDomain(), eBaseStep, 
 					dialog.getStepName());
 			getDiagramBehavior().refreshRenderingDecorators(pictogramElements[0]);
 		} else if (returnCode == Window.CANCEL) {

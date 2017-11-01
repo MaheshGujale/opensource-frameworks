@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="ASCII"?>
-<pi:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms" visible="true" gridUnit="10" diagramTypeId="Workflow" name="ert (Workflow)" version="0.11.0">
-  <graphicsAlgorithm xsi:type="al:Rectangle" background="//@colors.1" foreground="//@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
-  <colors red="227" green="238" blue="249"/>
-  <colors red="255" green="255" blue="255"/>
-</pi:Diagram>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:com.ecs.bizrules.ui.workflow.emf.model="www.opussoft.com" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms">
+  <pi:Diagram visible="true" gridUnit="10" diagramTypeId="Workflow" name="ert (Workflow)" pictogramLinks="/0/@children.0/@link /0/@children.0/@children.0/@link" version="0.11.0">
+    <graphicsAlgorithm xsi:type="al:Rectangle" background="/0/@colors.1" foreground="/0/@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <properties key="NodeType" value="businessRule"/>
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" lineWidth="1" filled="true" transparency="0.0" width="100" height="50" x="418" y="459" style="/0/@styles.0" cornerHeight="5" cornerWidth="5">
+        <renderingStyle>
+          <adaptedGradientColoredAreas definedStyleId="copper-white-gloss" gradientType="0">
+            <adaptedGradientColoredAreas styleAdaption="0">
+              <gradientColor>
+                <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="0">
+                  <color red="249" green="245" blue="242"/>
+                </start>
+                <end locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="1">
+                  <color red="249" green="245" blue="242"/>
+                </end>
+              </gradientColor>
+              <gradientColor>
+                <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="1">
+                  <color red="237" green="224" blue="216"/>
+                </start>
+                <end locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="2">
+                  <color red="237" green="224" blue="216"/>
+                </end>
+              </gradientColor>
+              <gradientColor>
+                <start locationType="LOCATION_TYPE_ABSOLUTE_START" locationValue="2">
+                  <color red="228" green="208" blue="196"/>
+                </start>
+                <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="2">
+                  <color red="245" green="240" blue="232"/>
+                </end>
+              </gradientColor>
+              <gradientColor>
+                <start locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="2">
+                  <color red="230" green="221" blue="208"/>
+                </start>
+                <end locationType="LOCATION_TYPE_ABSOLUTE_END" locationValue="0">
+                  <color red="230" green="221" blue="208"/>
+                </end>
+              </gradientColor>
+            </adaptedGradientColoredAreas>
+          </adaptedGradientColoredAreas>
+        </renderingStyle>
+        <graphicsAlgorithmChildren xsi:type="al:Image" lineWidth="1" transparency="0.0" width="16" height="16" x="4" y="2" id="businessrule" stretchH="false" stretchV="false" proportional="false"/>
+      </graphicsAlgorithm>
+      <link businessObjects="/1"/>
+      <anchors xsi:type="pi:ChopboxAnchor"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:Text" foreground="/0/@colors.4" lineWidth="1" filled="false" transparency="0.0" width="100" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="BusinessRule"/>
+        <link businessObjects="/1"/>
+      </children>
+    </children>
+    <styles background="/0/@colors.3" foreground="/0/@colors.2" lineWidth="1" id="E-CLASS"/>
+    <colors red="227" green="238" blue="249"/>
+    <colors red="255" green="255" blue="255"/>
+    <colors red="255" green="102"/>
+    <colors red="255" green="204" blue="153"/>
+    <colors red="51" green="51" blue="153"/>
+    <fonts name="Arial" size="8"/>
+  </pi:Diagram>
+  <com.ecs.bizrules.ui.workflow.emf.model:EBaseStep diagramType="businessRule" name="BusinessRule"/>
+</xmi:XMI>

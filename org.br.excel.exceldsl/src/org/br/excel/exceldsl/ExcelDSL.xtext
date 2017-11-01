@@ -1,0 +1,66 @@
+grammar org.br.excel.exceldsl.ExcelDSL with org.eclipse.xtext.common.Terminals
+
+generate excelDSL "http://www.br.org/excel/exceldsl/ExcelDSL"
+
+Excel:
+	(statements+=Statement*) expression=Expression?;
+
+Statement:
+	dataType=DataType variable=Variable '=' expression=Expression ';';
+
+Expression:
+	expression+=BasicExpression (operator=Operator expression+=Expression)?;
+
+ExpressionGroup:
+	'(' Expression ')';
+
+Operator:
+	operator=("&&" | "||" | "=" | "+" | "-" | "*" | "/" | "==" | ">" | "<" | ">=" | "<=" | "!=");
+
+BasicExpression:
+	primitive=Primitive | variable=Variable | inBuiltFunctionCall=InBuiltFunctionCall | javaClass=JavaClass
+	| expressionGroup=ExpressionGroup;
+
+Primitive:
+	strValue=StringVal | intValue=IntVal | doubleValue=Double | floatValue=Float | booleanValue=Boolean;
+
+StringVal:
+	STRING;
+
+IntVal:
+	INT;
+
+Double:
+	INT "." INT;
+
+Float:
+	INT '.' INT ('L' | 'l');
+
+Boolean:
+	"true" | "false";
+
+DataType:
+	datatype=('boolean' | 'int' | 'long' | 'float' | 'double' | 'Boolean' | 'Integer' | 'Long' | 'Float' | 'Double' |
+	'String' | 'Object' | 'short' | 'Short' | 'byte' | 'Byte' | 'char' | 'Charater');
+
+Variable:
+	variableName=ID;
+
+InBuiltFunctionCall:
+	excelFunction=ExcelFunction '(' functionParameters=FunctionParameters? ')';
+
+ExcelFunction:
+	excelFunctionName=ID;
+
+JavaClass:
+	javaObjectName=ID (javaMemberCall=JavaMemberCall | javaMethodCall=JavaMethodCall);
+
+JavaMemberCall:
+	'.' accessName=ID;
+
+JavaMethodCall:
+	'.' accessName+=ID ('.' accessName+=ID)* '(' functionParameters=FunctionParameters? ')'
+	(javaMethodCall+=JavaMethodCall)*;
+
+FunctionParameters:
+	parameter+=Expression (',' parameter+=Expression)*;

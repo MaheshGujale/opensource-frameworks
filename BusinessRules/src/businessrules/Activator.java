@@ -1,8 +1,17 @@
 package businessrules;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.thoughtworks.xstream.XStream;
+
+import businessrules.ui.workflow.common.emf.model.Workflow.EWorkflowPackage;
+import businessrulesruntime.core.engine.excel.ExcelFormulaContentProvider;
+import businessrulesruntime.core.engine.excel.ExcelFunctionInfo;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -14,7 +23,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -23,16 +32,33 @@ public class Activator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		// Loading excel excel functions
+		InputStream inputStream = Activator.class.getResourceAsStream("/resources/SystemDefinedFunctions.fun");
+		if (inputStream != null) {
+			ExcelFormulaContentProvider excelFormulaContentProvider = ExcelFormulaContentProvider.getInstance();
+			XStream stream = new XStream();
+			stream.alias("ExcelFunctionInfo", ExcelFunctionInfo.class);
+			List<ExcelFunctionInfo> systemDefinedFunctions = (List<ExcelFunctionInfo>) stream.fromXML(inputStream);
+			excelFormulaContentProvider.setInBuildFunction(systemDefinedFunctions);
+		}
+
+		// initialize the EWorkflowPackage
+		EWorkflowPackage workflowPackage = EWorkflowPackage.eINSTANCE;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -49,10 +75,11 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path
 	 *
-	 * @param path the path
+	 * @param path
+	 *            the path
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
