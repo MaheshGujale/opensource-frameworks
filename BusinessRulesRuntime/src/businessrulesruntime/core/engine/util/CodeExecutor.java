@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 import businessrulesruntime.core.engine.CodeDetail;
 import businessrulesruntime.core.engine.FieldInfo;
 import businessrulesruntime.core.engine.MethodInfo;
+import businessrulesruntime.core.engine.model.Context;
+import businessrulesruntime.core.engine.model.Message;
+import businessrulesruntime.core.script.JavaScriptHandler;
 
 public class CodeExecutor {
 	private static Logger logger = Logger.getLogger(CodeExecutor.class);
@@ -19,6 +22,7 @@ public class CodeExecutor {
 	private Method method;
 
 	private CodeDetail codeDetail;
+	private Long startTime;
 
 	public CodeExecutor(String name, CodeDetail codeDetail) throws ClassNotFoundException, SecurityException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -27,10 +31,22 @@ public class CodeExecutor {
 		initialize(codeDetail);
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	private void initialize(CodeDetail codeDetail) throws ClassNotFoundException, SecurityException,
 			NoSuchMethodException, InstantiationException, IllegalAccessException {
-		Class<?> clzz = Class.forName(codeDetail.getClassName());
+		Class<?> clzz = JavaScriptHandler.get().loadClass(codeDetail.getClassName(), codeDetail.getJavaCode(), false);
 		initialize(clzz, codeDetail.getMethodInfo());
+	}
+
+	public Long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Long startTime) {
+		this.startTime = startTime;
 	}
 
 	private void initialize(Class<?> clzz, MethodInfo methodInfo) throws ClassNotFoundException, SecurityException,
@@ -38,10 +54,8 @@ public class CodeExecutor {
 		String methodName = methodInfo.getName();
 
 		List<Class<?>> parameterTypes = new ArrayList<Class<?>>();
-		List<FieldInfo> parameterInfos = methodInfo.getParametersInfo();
-		for (FieldInfo fieldInfo : parameterInfos) {
-			parameterTypes.add(Class.forName(fieldInfo.getDataType()));
-		}
+		parameterTypes.add(Message.class);
+		parameterTypes.add(Context.class);
 
 		method = clzz.getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[] {}));
 

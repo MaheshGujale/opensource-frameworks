@@ -43,14 +43,17 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 
 				while (iterator.hasNext()) {
 					List<CodeExecutor> codeExecutorList = iterator.next().getValue();
-
+					
 					for (CodeExecutor codeExecutor : codeExecutorList) {
-						Object returnValue = executeRule(codeExecutor, message, context);
-						if ((returnValue instanceof Boolean && (Boolean) returnValue)
-								|| (returnValue instanceof Integer && ((Integer) returnValue).equals(new Integer(1)))) {
-							continue;
-						} else {
-							return false;
+						if (System.currentTimeMillis() > codeExecutor.getStartTime()) {
+							Object returnValue = executeRule(codeExecutor, message, context);
+							if ((returnValue instanceof Boolean && (Boolean) returnValue)
+									|| (returnValue instanceof Integer
+											&& ((Integer) returnValue).equals(new Integer(1)))) {
+								continue;
+							} else {
+								return false;
+							}
 						}
 					}
 				}
@@ -64,13 +67,9 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 
 	@SuppressWarnings("unused")
 	public Object executeRule(CodeExecutor codeExecutor, mT message, cT context) throws Exception {
+		logger.debug("Executing rule - " + codeExecutor.getName());
 		List<FieldInfo> parameterInfos = codeExecutor.getCodeDetail().getMethodInfo().getParametersInfo();
-		List<Object> arguments = new ArrayList<Object>();
-		for (FieldInfo fieldInfo : parameterInfos) {
-			InjectInfo injectInfo = fieldInfo.getInjectInfo();
-		}
-
-		return codeExecutor.execute(arguments.toArray());
+		return codeExecutor.execute(new Object[]{message, context});
 	}
 
 	private synchronized void loadCodeExecutors() throws SecurityException, ClassNotFoundException,
@@ -90,6 +89,7 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 			codeExecutorList = new ArrayList<CodeExecutor>();
 			for (BusinessRuleInfo<mT, cT> businessRuleInfo : businessRuleInfos) {
 				codeExecutor = new CodeExecutor(getName(), businessRuleInfo.getCodeDetail());
+				codeExecutor.setStartTime(businessRuleInfo.getRuleStartTime());
 				codeExecutorList.add(codeExecutor);
 			}
 			codeExecutors.put(entry.getKey(), codeExecutorList);

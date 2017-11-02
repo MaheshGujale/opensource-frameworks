@@ -2,6 +2,7 @@ package businessrulesruntime.core.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -128,6 +129,13 @@ public abstract class AbstractStep<mT extends IMessage, cT extends IContext> imp
 		try {
 			retVal = doExecute(message, context);
 			context.setReturnValue(retVal);
+			ILink executionLink = getNextExecutionLink(message, context);
+			if (executionLink != null) {
+				IStep targetStep = executionLink.getTarget();
+				if (targetStep != null) {
+					return targetStep.execute(message, context);
+				}
+			}
 		} catch (Exception lastExecutedStepException) {
 			context.getStepErrorList().add(lastExecutedStepException);
 			logger.error("Error while executing step '" + name + " ", lastExecutedStepException);
@@ -135,6 +143,25 @@ public abstract class AbstractStep<mT extends IMessage, cT extends IContext> imp
 		}
 		return retVal;
 	}
+	
+	protected ILink getNextExecutionLink(mT message, cT context) {
+		Links links = getOutgoingLinks();
+		if (links == null) {
+			return null;
+		}
+
+		List<ILink> listLink = links.getLinks();
+		if (listLink == null) {
+			return null;
+		}
+
+		if (listLink.size() > 0) {
+			return listLink.get(0);
+		}
+
+		return null;
+	}
+
 
 	@Override
 	public boolean hasSubProcess() {

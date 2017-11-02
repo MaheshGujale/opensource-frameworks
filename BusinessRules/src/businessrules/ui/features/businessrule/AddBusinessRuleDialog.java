@@ -14,6 +14,7 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -21,7 +22,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 
 import businessrules.ui.features.CodeComposite;
 import businessrules.ui.utils.CloneObjectUtil;
@@ -46,7 +46,7 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 	protected Table tblReference;
 
 	private String groupName;
-	private Set<String> names = new HashSet<String>();
+	private Set<String> names = new HashSet();
 	private String title;
 	private String headerMessage;
 	private String lastTabName;
@@ -70,6 +70,10 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 		this.names = names;
 		setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE | SWT.APPLICATION_MODAL);
 		setHelpAvailable(false);
+	}
+
+	protected Point getInitialSize() {
+		return new Point(600, 400);
 	}
 
 	@Override
@@ -96,7 +100,7 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 
 		ruleCTabItem = new CTabItem(tabFolder, SWT.NONE);
 		ruleCTabItem.setControl(getCodeComposite(tabFolder, ruleCTabItem, returnTypeRequiredList, lastTabName,
-				groupName, eventManager, businessRuleInfo.getCodeDetail()));
+				groupName, eventManager, businessRuleInfo));
 
 		tabFolder.setSelection(0);
 
@@ -104,13 +108,15 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 	}
 
 	protected Control getCodeComposite(CTabFolder tabFolder, CTabItem ruleCTabItem, List<String> returnRestrictedList,
-			String lastTabName, String groupName, EventManager eventManager, CodeDetail codeDetail) {
+			String lastTabName, String groupName, EventManager eventManager, BusinessRuleInfo businessRuleInfo) {
 		ruleCTabItem.setText(lastTabName);
-		/*Composite composite = new Composite(tabFolder, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-		Text ruleName = new Text(composite, SWT.NONE);*/
-		
-		codeComposite = new CodeComposite(tabFolder, SWT.NONE, codeDetail, groupName, eventManager,
+		/*
+		 * Composite composite = new Composite(tabFolder, SWT.NONE);
+		 * composite.setLayout(new GridLayout(2, false)); Text ruleName = new
+		 * Text(composite, SWT.NONE);
+		 */
+
+		codeComposite = new CodeComposite(tabFolder, SWT.NONE, businessRuleInfo, groupName, eventManager,
 				returnRestrictedList);
 		return codeComposite;
 	}
@@ -123,40 +129,12 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 
 	@Override
 	protected void okPressed() {
-		if (!getStepInformation()) {
+		BusinessRuleInfo lbusinessRuleInfo = codeComposite.getBusinessRuleInfo();
+		if (!validateRule(lbusinessRuleInfo)) {
 			return;
 		}
-
-		CodeDetail codeDetail = getCodeCompositeInfo();
-
-		if (codeDetail == null) {
-			tabFolder.setSelection(2);
-			return;
-		} else {
-
-			if (codeDetail.getMethodInfo() != null) {
-				List<FieldInfo> unusedFieldInfos = updateParametersInMethod(codeDetail);
-				List<FieldInfo> parametersInfo = parametersComposite.getFieldInfos();
-				if (isInjectProvided(parametersInfo) == false) {
-					return;
-				}
-				if (unusedFieldInfos.isEmpty() == false) {
-					String unusedFieldInfo = "";
-					for (FieldInfo fieldInfo : unusedFieldInfos) {
-						unusedFieldInfo += fieldInfo.getName() + "(" + fieldInfo.getDataType() + "), ";
-					}
-					boolean returnToDialog = MessageDialog.openConfirm(null, "Exit", "Parameter " + unusedFieldInfo
-							+ " are not used.\n" + "Press Ok to exit or Cancel to return to dialog.");
-					if (returnToDialog == false) {
-						tabFolder.setSelection(1);
-						return;
-					}
-				}
-				businessRuleInfo.setCodeDetail(codeDetail);
-				businessRuleInfo.setParameterInfos(parametersInfo);
-				super.okPressed();
-			}
-		}
+		this.businessRuleInfo = lbusinessRuleInfo;
+		super.okPressed();
 	}
 
 	private boolean isInjectProvided(List<FieldInfo> parametersInfo) {
@@ -200,18 +178,19 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 		return unusedFieldInfos;
 	}
 
-	protected CodeDetail getCodeCompositeInfo() {
-		return codeComposite.getCodeInfo();
-
-	}
-
-	protected boolean getStepInformation() {
-		if (validateName(stepName.trim()) == false) {
+	protected boolean validateRule(BusinessRuleInfo businessRuleInfo) {
+		String ruleName = businessRuleInfo.getName();
+		if (validateName(ruleName) == false) {
 			return false;
 		}
-		businessRuleInfo.setName(stepName);
-		businessRuleInfo.setDisplayName(stepName);
-		businessRuleInfo.setDescription(stepName);
+		if (businessRuleInfo.getRuleStartTime() == null) {
+			MessageDialog.openError(getShell(), "Rule start time not given",
+					"Provide '" + ruleName + "' rule start time");
+			return false;
+		}
+		businessRuleInfo.setName(ruleName);
+		businessRuleInfo.setDisplayName(ruleName);
+		businessRuleInfo.setDescription(ruleName);
 		return true;
 	}
 

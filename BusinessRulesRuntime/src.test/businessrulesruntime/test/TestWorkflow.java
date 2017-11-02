@@ -9,7 +9,8 @@ public class TestWorkflow {
 		WorkflowEngine workflowEngine = new WorkflowEngine();
 		Message message = new Message();
 		message.setMti("1200");
+		message.setPrimaryAccountNumber("488787878878787878");
 		Context context = new Context();
-		workflowEngine.execute(message, context);
+		System.out.println(workflowEngine.execute(message, context));
 	}
 }

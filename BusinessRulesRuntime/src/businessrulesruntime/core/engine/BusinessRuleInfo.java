@@ -9,6 +9,9 @@ public class BusinessRuleInfo<mT extends IMessage, cT extends IContext> extends 
 	private static final long serialVersionUID = 1L;
 
 	protected CodeDetail codeDetail;
+	protected Long ruleStartTime;
+	protected Long ruleExpireTime;
+	protected String version;
 
 	public BusinessRuleInfo(String name, String displayName, String description) {
 		super(name, name, displayName, description);
@@ -25,6 +28,22 @@ public class BusinessRuleInfo<mT extends IMessage, cT extends IContext> extends 
 	@Override
 	public Object doExecute(mT message, cT context) throws Exception {
 		return null;
+	}
+
+	public Long getRuleStartTime() {
+		return ruleStartTime;
+	}
+
+	public void setRuleStartTime(Long ruleStartTime) {
+		this.ruleStartTime = ruleStartTime;
+	}
+
+	public Long getRuleExpireTime() {
+		return ruleExpireTime;
+	}
+
+	public void setRuleExpireTime(Long ruleExpireTime) {
+		this.ruleExpireTime = ruleExpireTime;
 	}
 
 	@Override

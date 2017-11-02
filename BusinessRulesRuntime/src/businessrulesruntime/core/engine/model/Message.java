@@ -1,9 +1,13 @@
 package businessrulesruntime.core.engine.model;
 
-import businessrulesruntime.core.engine.IMessage;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+import businessrulesruntime.core.engine.IMessage;
+
+@XmlRootElement
 @SuppressWarnings("serial")
 public class Message implements IMessage, Serializable {
 	private String mti; /* Message Type */
