@@ -97,7 +97,7 @@ public class JavaCodeGenerator {
 		for (String imports : codeGenHelper.getImports()) {
 			importstmts.append("import " + imports + ";\n");
 		}
-		importstmts.append("import "+ExcelFunctions.class.getCanonicalName()+";\n");
+		importstmts.append("import " + ExcelFunctions.class.getCanonicalName() + ";\n");
 		// importstmts.append("import java.util.Map;\n");
 
 		javaCode.append("\n" + importstmts + "\n" + classname + "\t public " + returnType + " doExecute(" + paramNames
@@ -162,7 +162,9 @@ public class JavaCodeGenerator {
 						getPrimitive(primitive, parsedExcelFormula);
 					} else if (basicExpression.getVariable() != null) {
 						Variable variable = (Variable) basicExpression.getVariable();
-						parsedExcelFormula.append(variable.getVariableName());
+						parsedExcelFormula
+								.append("_message.get" + Character.toUpperCase(variable.getVariableName().charAt(0))
+										+ variable.getVariableName().substring(1) + "()");
 					} else if (basicExpression.getInBuiltFunctionCall() != null) {
 						InBuiltFunctionCall inBuiltFunctionCall = (InBuiltFunctionCall) basicExpression
 								.getInBuiltFunctionCall();

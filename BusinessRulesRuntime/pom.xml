@@ -34,7 +34,7 @@
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>../BusinessRules/lib</outputDirectory>
+									<outputDirectory>../AbstractBusinessRules/lib</outputDirectory>
 									<destFileName>${build.finalName}.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
@@ -81,5 +81,26 @@
 			<version>2.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>xpp3_min-1.1.4c</groupId>
+			<artifactId>xpp3_min-1.1.4c</artifactId>
+			<version>1.1.4</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/xpp3_min-1.1.4c.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>3</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/xpp3.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>xstream-1.4.1</groupId>
+			<artifactId>xstream-1.4.1</artifactId>
+			<version>1.4.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/xstream-1.4.1.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>

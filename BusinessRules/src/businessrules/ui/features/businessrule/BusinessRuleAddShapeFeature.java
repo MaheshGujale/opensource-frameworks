@@ -1,5 +1,6 @@
 package businessrules.ui.features.businessrule;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -161,7 +162,7 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 		BusinessRuleStep businessRulestep = (BusinessRuleStep) eBaseStep.getStepInstance();
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		BizFlowFeatureProvider featureProvider = (BizFlowFeatureProvider) getFeatureProvider();
-		
+
 		BusinessRulePropertyDialog dialog = new BusinessRulePropertyDialog(shell, eBaseStep.getName(),
 				businessRulestep.getDisplayName(), businessRulestep.getDescription(),
 				businessRulestep.getParameterInfos(), businessRulestep.isHandleException(), getDiagram(),
@@ -175,7 +176,7 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 			businessRulestep.setParameterInfos(dialog.getParameterInfo());
 			businessRulestep.setBusinessRuleInfos(dialog.getBusinessRuleInfos());
 
-			WorkflowUtil.refreshPictogramElement(getDiagramBehavior().getEditingDomain(), eBaseStep, 
+			WorkflowUtil.refreshPictogramElement(getDiagramBehavior().getEditingDomain(), eBaseStep,
 					dialog.getStepName());
 			getDiagramBehavior().refreshRenderingDecorators(pictogramElements[0]);
 		} else if (returnCode == Window.CANCEL) {
@@ -205,9 +206,6 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 			throw new ValidationException(ExceptionType.Error, bStep.getDescription(), "BusinessRule is not defined");
 		}
 
-		BizFlowFeatureProvider featureProvider = (BizFlowFeatureProvider) getFeatureProvider();
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(featureProvider.getGroupName());
-		//List<String> allClassPaths = ActiveProjectUtil.getAllClassPaths(JavaCore.create(project));
 		JavaScriptHandler javaScriptHandler = JavaScriptHandler.get();
 
 		Iterator<Entry<String, List<BusinessRuleInfo>>> iterator = businessRuleInfos.entrySet().iterator();
@@ -215,16 +213,17 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 			Entry<String, List<BusinessRuleInfo>> entry = iterator.next();
 			List<BusinessRuleInfo> businessRulelList = entry.getValue();
 			for (BusinessRuleInfo businessRuleInfo : businessRulelList) {
-							CodeDetail codeDetail = businessRuleInfo.getCodeDetail();
-							if (codeDetail.getExcelFormula() == null || codeDetail.getExcelFormula().equals("")) {
-								throw new ValidationException(ExceptionType.Error, businessRuleInfo.getDescription(),
-										"Excel formula is not given in " + businessRuleInfo.getDisplayName());
-							}
-							String javaCode = codeDetail.getJavaCode().replace("${className}", "ExcelJavaCode");
-							//javaScriptHandler.loadClass("ExcelJavaCode", javaCode, true, allClassPaths);
-						
+				CodeDetail codeDetail = businessRuleInfo.getCodeDetail();
+				if (codeDetail.getExcelFormula() == null || codeDetail.getExcelFormula().equals("")) {
+					throw new ValidationException(ExceptionType.Error, businessRuleInfo.getDescription(),
+							"Excel formula is not given in " + businessRuleInfo.getDisplayName());
 				}
-				
+				String javaCode = codeDetail.getJavaCode().replace("${className}", "ExcelJavaCode");
+				List<String> allClassPaths = new ArrayList<>();
+				javaScriptHandler.loadClass("ExcelJavaCode", javaCode, true, allClassPaths);
+
 			}
+
 		}
+	}
 }

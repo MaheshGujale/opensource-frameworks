@@ -1,6 +1,8 @@
 package businessrules;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -12,6 +14,7 @@ import com.thoughtworks.xstream.XStream;
 import businessrules.ui.workflow.common.emf.model.Workflow.EWorkflowPackage;
 import businessrulesruntime.core.engine.excel.ExcelFormulaContentProvider;
 import businessrulesruntime.core.engine.excel.ExcelFunctionInfo;
+import businessrulesruntime.core.engine.model.Message;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -42,12 +45,18 @@ public class Activator extends AbstractUIPlugin {
 
 		// Loading excel excel functions
 		InputStream inputStream = Activator.class.getResourceAsStream("/resources/SystemDefinedFunctions.fun");
+		ExcelFormulaContentProvider excelFormulaContentProvider = ExcelFormulaContentProvider.getInstance();
 		if (inputStream != null) {
-			ExcelFormulaContentProvider excelFormulaContentProvider = ExcelFormulaContentProvider.getInstance();
 			XStream stream = new XStream();
 			stream.alias("ExcelFunctionInfo", ExcelFunctionInfo.class);
 			List<ExcelFunctionInfo> systemDefinedFunctions = (List<ExcelFunctionInfo>) stream.fromXML(inputStream);
 			excelFormulaContentProvider.setInBuildFunction(systemDefinedFunctions);
+			Field[] fieldNames = Message.class.getDeclaredFields();
+			List<String> variableNames = new ArrayList<>();
+			for (Field field : fieldNames) {
+				variableNames.add(field.getName());
+			}
+			excelFormulaContentProvider.setVariableNames(variableNames);
 		}
 
 		// initialize the EWorkflowPackage

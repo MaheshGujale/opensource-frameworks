@@ -1214,7 +1214,6 @@ public class Message implements IMessage, Serializable {
 	}
 
 	public void setValue(String fieldName, Object value) {
-		// TODO
 	}
 
 	public Object getValue(String fieldName) {

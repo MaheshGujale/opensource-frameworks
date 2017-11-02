@@ -36,6 +36,7 @@ import businessrulesruntime.core.engine.Links;
 import businessrulesruntime.core.engine.SequenceLink;
 import businessrulesruntime.core.engine.StartStep;
 import businessrulesruntime.core.engine.util.FileUtil;
+import businessrulesruntime.core.engine.util.WorkflowRuntimeUtil;
 
 @SuppressWarnings("rawtypes")
 public class WorkflowUtil {
@@ -303,8 +304,8 @@ public class WorkflowUtil {
 		return FileUtils.listFiles(searchAbsolutePath, new String[] { "bizflow" }, isRecursive);
 	}
 
-	@SuppressWarnings("unchecked")
-	private static IStep linkSteps(BizflowModel bizflowModel) {
+	/*@SuppressWarnings("unchecked")
+	public static IStep linkSteps(BizflowModel bizflowModel) {
 		Map<String, IStep> steps = bizflowModel.getSteps();
 		Map<String, ILink> links = bizflowModel.getLinks();
 
@@ -328,7 +329,7 @@ public class WorkflowUtil {
 		}
 
 		return startStep;
-	}
+	}*/
 
 	public static String convertToRelativeBizflowPath(String baseModelPath, String modelFileName) {
 		String absoluteBaseModelPathFile = new File(baseModelPath).getAbsolutePath();
@@ -344,7 +345,7 @@ public class WorkflowUtil {
 		InputStream inputStream = IOUtils.toInputStream(bizflowContent.getBizflowModel());
 		BizflowModel models = (BizflowModel) getXStream().fromXML(inputStream);
 
-		linkSteps(models);
+		WorkflowRuntimeUtil.linkSteps(models);
 		return models;
 	}
 

@@ -1,0 +1,79 @@
+<BizflowModel>
+  <steps>
+    <entry>
+      <string>Start</string>
+      <StartStep>
+        <workflowName>Bizflow</workflowName>
+        <name>Start</name>
+        <displayName>Start</displayName>
+        <parameterInfos/>
+        <handleException>false</handleException>
+      </StartStep>
+    </entry>
+    <entry>
+      <string>BusinessRule</string>
+      <BusinessRuleStep>
+        <workflowName>BusinessRule</workflowName>
+        <name>BusinessRule</name>
+        <displayName>BusinessRule</displayName>
+        <description>BusinessRule</description>
+        <parameterInfos/>
+        <handleException>false</handleException>
+        <businessRuleInfos class="linked-hash-map">
+          <entry>
+            <string>common</string>
+            <list>
+              <BusinessRuleInfo>
+                <name>BusinessRule</name>
+                <displayName>BusinessRule</displayName>
+                <description>BusinessRule</description>
+                <parameterInfos/>
+                <handleException>false</handleException>
+                <codeDetail>
+                  <className>${className}</className>
+                  <methodInfo>
+                    <name>doExecute</name>
+                    <isStatic>false</isStatic>
+                    <parametersInfo/>
+                    <returnInfo>
+                      <name>Boolean</name>
+                      <dataType>java.lang.Boolean</dataType>
+                      <isArray>false</isArray>
+                      <isFieldReferenced>false</isFieldReferenced>
+                    </returnInfo>
+                  </methodInfo>
+                  <javaCode>
+import businessrulesruntime.core.engine.model.Message;
+import businessrulesruntime.core.engine.model.Context;
+import businessrulesruntime.core.engine.excel.ExcelFunctions;
+
+public class ${className} extends ExcelFunctions{
+
+	 public Boolean doExecute(Message _message, Context _context){
+		return EXACT(_message.getMti(),&quot;1200&quot;);
+	}
+
+}</javaCode>
+                  <excelFormula>EXACT(mti, &quot;1200&quot;)</excelFormula>
+                </codeDetail>
+              </BusinessRuleInfo>
+            </list>
+          </entry>
+        </businessRuleInfos>
+      </BusinessRuleStep>
+    </entry>
+  </steps>
+  <links>
+    <entry>
+      <string>Start_BusinessRule</string>
+      <SequenceLink>
+        <workflowName>Start_BusinessRule</workflowName>
+        <name>Start_BusinessRule</name>
+        <displayName>Start_BusinessRule</displayName>
+        <sourceStepId>Start</sourceStepId>
+        <targetStepId>BusinessRule</targetStepId>
+        <parameterInfos/>
+      </SequenceLink>
+    </entry>
+  </links>
+</BizflowModel>

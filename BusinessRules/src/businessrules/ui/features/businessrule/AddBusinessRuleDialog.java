@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 
 import businessrules.ui.features.CodeComposite;
 import businessrules.ui.utils.CloneObjectUtil;
@@ -93,20 +94,11 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 		// eventManager
 		EventManager eventManager = new EventManager();
 
-		parametersCTabItem = new CTabItem(tabFolder, SWT.NONE);
-		parametersCTabItem.setText("Parameters");
-		parametersComposite = new ParametersComposite(tabFolder, SWT.NONE, businessRuleInfo.getParameterInfos(),
-				workflowParamsInfo, groupName, stepName, injectRequired);
-		parametersCTabItem.setControl(parametersComposite);
-
 		ruleCTabItem = new CTabItem(tabFolder, SWT.NONE);
 		ruleCTabItem.setControl(getCodeComposite(tabFolder, ruleCTabItem, returnTypeRequiredList, lastTabName,
 				groupName, eventManager, businessRuleInfo.getCodeDetail()));
 
 		tabFolder.setSelection(0);
-
-		// for excel code
-		parametersComposite.publishParameters();
 
 		return parent;
 	}
@@ -114,6 +106,10 @@ public class AddBusinessRuleDialog extends TitleAreaDialog {
 	protected Control getCodeComposite(CTabFolder tabFolder, CTabItem ruleCTabItem, List<String> returnRestrictedList,
 			String lastTabName, String groupName, EventManager eventManager, CodeDetail codeDetail) {
 		ruleCTabItem.setText(lastTabName);
+		/*Composite composite = new Composite(tabFolder, SWT.NONE);
+		composite.setLayout(new GridLayout(2, false));
+		Text ruleName = new Text(composite, SWT.NONE);*/
+		
 		codeComposite = new CodeComposite(tabFolder, SWT.NONE, codeDetail, groupName, eventManager,
 				returnRestrictedList);
 		return codeComposite;

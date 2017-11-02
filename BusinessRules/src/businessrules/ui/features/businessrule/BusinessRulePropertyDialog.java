@@ -44,7 +44,6 @@ public class BusinessRulePropertyDialog extends TitleAreaDialog {
 	private List<FieldInfo> parameterInfos = new ArrayList<FieldInfo>();
 	private Map<String, List<BusinessRuleInfo>> businessRuleInfos = new LinkedHashMap<String, List<BusinessRuleInfo>>();
 	private String groupName;
-	private boolean handleException;
 
 	public BusinessRulePropertyDialog(Shell parentShell, String stepName, String stepDisplayName,
 			String stepDescription, List<FieldInfo> parameterInfos, boolean handleException, Diagram diagram,
@@ -59,7 +58,6 @@ public class BusinessRulePropertyDialog extends TitleAreaDialog {
 		this.diagram = diagram;
 		this.shape = shape;
 		this.groupName = groupName;
-		this.handleException = handleException;
 		setDefaultImage(Activator.getImageDescriptor("icons/icon_step_businessrule.png").createImage());
 	}
 
@@ -79,9 +77,6 @@ public class BusinessRulePropertyDialog extends TitleAreaDialog {
 		tabFolder.setSelectionBackground(
 				Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
-		CTabItem informationCTabItem = new CTabItem(tabFolder, SWT.NONE);
-		informationCTabItem.setText("Information");
-
 		CTabItem businessRuleCTabItem = new CTabItem(tabFolder, SWT.NONE);
 		businessRuleCTabItem.setText("BusinessRules");
 
@@ -96,51 +91,6 @@ public class BusinessRulePropertyDialog extends TitleAreaDialog {
 
 		tabFolder.setSelection(0);
 		return parent;
-	}
-
-	private void generateDiffComposite(Composite parent) {
-		Composite diffComposite = new Composite(parent, SWT.NONE);
-		GridLayout compLayout = new GridLayout(2, false);
-		compLayout.marginHeight = 0;
-		compLayout.marginWidth = 0;
-		diffComposite.setLayout(compLayout);
-		GridData compGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
-		compGridData.minimumHeight = 100;
-		diffComposite.setLayoutData(compGridData);
-
-		Label lblBase = new Label(diffComposite, SWT.NONE);
-		lblBase.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		lblBase.setText("Base");
-
-		Label lblRefference = new Label(diffComposite, SWT.NONE);
-		lblRefference.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		lblRefference.setText("Reference");
-
-		tblBase = new Table(diffComposite, SWT.BORDER);
-		GridData baseData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		baseData.heightHint = 50;
-		tblBase.setLayoutData(baseData);
-		tblBase.setHeaderVisible(false);
-		tblBase.setLinesVisible(false);
-		tblBase.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tblBase.deselectAll();
-			}
-		});
-
-		tblReference = new Table(diffComposite, SWT.BORDER);
-		tblReference.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tblReference.setHeaderVisible(false);
-		tblReference.setLinesVisible(false);
-		tblReference.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tblReference.deselectAll();
-			}
-		});
-
-		parent.pack();
 	}
 
 	@Override

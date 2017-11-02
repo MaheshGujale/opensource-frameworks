@@ -79,6 +79,9 @@ public abstract class AbstractStep<mT extends IMessage, cT extends IContext> imp
 
 	@Override
 	public Links<mT, cT> getIncomingLinks() {
+		if(incomingLinks == null) {
+			incomingLinks = new Links<mT, cT>();
+		}
 		return incomingLinks;
 	}
 
@@ -89,6 +92,9 @@ public abstract class AbstractStep<mT extends IMessage, cT extends IContext> imp
 
 	@Override
 	public Links<mT, cT> getOutgoingLinks() {
+		if(outgoingLinks == null) {
+			outgoingLinks = new Links<mT, cT>();
+		}
 		return outgoingLinks;
 	}
 

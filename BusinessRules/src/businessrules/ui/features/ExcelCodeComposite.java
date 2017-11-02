@@ -6,18 +6,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.tools.ToolProvider;
-
 import org.apache.log4j.Logger;
 import org.br.excel.exceldsl.ExcelDSLRuntimeModule;
 import org.br.excel.exceldsl.ui.ExcelDSLUiModule;
 import org.br.excel.exceldsl.ui.internal.ExcelDSLActivator;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -49,7 +44,6 @@ import businessrulesruntime.core.engine.CodeDetail;
 import businessrulesruntime.core.engine.FieldInfo;
 import businessrulesruntime.core.engine.MethodInfo;
 import businessrulesruntime.core.engine.excel.ExcelFormulaContentProvider;
-import businessrulesruntime.core.engine.excel.ExcelFunctions;
 import businessrulesruntime.core.script.JavaScriptHandler;
 
 public class ExcelCodeComposite extends Composite implements PropertyChangeListener {

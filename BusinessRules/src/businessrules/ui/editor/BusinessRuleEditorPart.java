@@ -4,26 +4,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.graphiti.examples.common.FileService;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -45,24 +34,13 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.part.FileEditorInput;
 
-import com.thoughtworks.xstream.XStream;
-
-import businessrules.Activator;
+import businessrules.ui.utils.UIConstants;
 import businessrules.ui.utils.WorkflowUtil;
-import businessrules.ui.workflow.BizFlowFeatureProvider;
-import businessrulesruntime.core.engine.ActivityStep;
 import businessrulesruntime.core.engine.BizflowContent;
 import businessrulesruntime.core.engine.BizflowModel;
-import businessrulesruntime.core.engine.BusinessRuleInfo;
-import businessrulesruntime.core.engine.BusinessRuleStep;
-import businessrulesruntime.core.engine.CodeDetail;
-import businessrulesruntime.core.engine.ConditionalLink;
-import businessrulesruntime.core.engine.DecisionStep;
 import businessrulesruntime.core.engine.FieldInfo;
-import businessrulesruntime.core.engine.SequenceLink;
-import businessrulesruntime.core.engine.StartStep;
+import businessrulesruntime.core.engine.WorkflowEngine;
 import businessrulesruntime.core.engine.util.FileUtil;
 
 public class BusinessRuleEditorPart extends DiagramEditor {
@@ -75,9 +53,7 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 	private ScrolledForm frmHeader;
 
-	private URI modelURI;
 	private IProject activeProject;
-	private String oldFilePath;
 	private String newDiagramPath;
 	private String fileName;
 	public String editorInitializationError = null;
@@ -126,126 +102,115 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		BizflowContent bizflowContent = null;
-		URI currentURI = null;
-		IFile file = null;
 		DiagramEditorInput diagramInput = null;
 		BusinessRuleEditorInput bruleInput = (BusinessRuleEditorInput) input;
 		
-		setPartName(bruleInput.getName() + " (Workflow)");
-		
 		String workflowFileName = bruleInput.getWorkflow().getWorkflowConfigFile();
-		if(!new File(workflowFileName).exists()) {
-			Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow",
-					bruleInput.getName() + " (Workflow)", false);
-			
+		Diagram diagram = null;
+		if (!new File(workflowFileName).exists()) {
+			diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName(), false);
+
 			URI uri = URI.createFileURI(workflowFileName);
-			
+
 			FileService.createEmfFileForDiagram(uri, diagram);
 
 			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
 			diagramInput = new DiagramEditorInput(EcoreUtil.getURI(diagram), providerId);
 		} else {
 			URI uri1 = URI.createFileURI(workflowFileName);
-			Diagram diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName() + " (Workflow)",
-					false);
+			diagram = Graphiti.getPeCreateService().createDiagram("Workflow", bruleInput.getName(), false);
 			String providerId = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(diagram.getDiagramTypeId());
 			diagramInput = new DiagramEditorInput(uri1, providerId);
 		}
 
-		
-
-		/*if (input instanceof FileEditorInput) {
-			file = ((FileEditorInput) input).getFile();
-		} else if (input instanceof DiagramEditorInput) {
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IPath iPath = new Path(((DiagramEditorInput) input).getUriString());
-			IPath paths = iPath.removeFirstSegments(1);
-			file = workspace.getRoot().getFile(paths);
-		}
-
-		try {
-			activeProject = file.getProject();
-
-			java.net.URI uri = file.getLocationURI();
-			currentURI = URI.createURI(uri.toString());
-			oldFilePath = uri.getPath();
-
-			if (oldFilePath.contains("#") && input instanceof DiagramEditorInput) {
-				oldFilePath = oldFilePath.substring(0, oldFilePath.lastIndexOf("#"));
-			}
-
-			String path = activeProject.getLocation() + "/temp";
-			File tempFolder = new File(path);
-			tempFolder.mkdir();
-
-			fileName = oldFilePath.substring(oldFilePath.lastIndexOf(Const_forwardSlash) + 1,
-					oldFilePath.lastIndexOf("."));
-
-			newDiagramPath = path + "/tmp_" + fileName + ".bizflow";
-			File diagramFile = new File(tempFolder, "/tmp_" + fileName + ".bizflow");
-
-			File inputFile = new File(oldFilePath);
-			bizflowContent = FileUtil.readFromFile(inputFile);
-			if (bizflowContent.getBizflowDiagram().equals("")) {
-				InputStream inputStream = Activator.class.getResourceAsStream("/resources/Diagram.template");
-				int value = 0;
-				StringBuffer buffer = new StringBuffer();
-				while ((value = inputStream.read()) != -1) {
-					buffer.append((char) value);
-				}
-				FileOutputStream outputStream = new FileOutputStream(inputFile);
-				outputStream.write(buffer.toString().replace("<[[BizflowName]]>", fileName).getBytes());
-				outputStream.flush();
-				outputStream.close();
-				bizflowContent = FileUtil.readFromFile(inputFile);
-			}
-
-			FileOutputStream outputStream = new FileOutputStream(diagramFile);
-			outputStream.write(bizflowContent.getBizflowDiagram().getBytes());
-			outputStream.flush();
-			outputStream.close();
-
-			input = new URIEditorInput(URI.createFileURI(newDiagramPath));
-		} catch (Exception e) {
-		}*/
+		/*
+		 * if (input instanceof FileEditorInput) { file = ((FileEditorInput)
+		 * input).getFile(); } else if (input instanceof DiagramEditorInput) {
+		 * IWorkspace workspace = ResourcesPlugin.getWorkspace(); IPath iPath =
+		 * new Path(((DiagramEditorInput) input).getUriString()); IPath paths =
+		 * iPath.removeFirstSegments(1); file =
+		 * workspace.getRoot().getFile(paths); }
+		 * 
+		 * try { activeProject = file.getProject();
+		 * 
+		 * java.net.URI uri = file.getLocationURI(); currentURI =
+		 * URI.createURI(uri.toString()); oldFilePath = uri.getPath();
+		 * 
+		 * if (oldFilePath.contains("#") && input instanceof DiagramEditorInput)
+		 * { oldFilePath = oldFilePath.substring(0,
+		 * oldFilePath.lastIndexOf("#")); }
+		 * 
+		 * String path = activeProject.getLocation() + "/temp"; File tempFolder
+		 * = new File(path); tempFolder.mkdir();
+		 * 
+		 * fileName =
+		 * oldFilePath.substring(oldFilePath.lastIndexOf(Const_forwardSlash) +
+		 * 1, oldFilePath.lastIndexOf("."));
+		 * 
+		 * newDiagramPath = path + "/tmp_" + fileName + ".bizflow"; File
+		 * diagramFile = new File(tempFolder, "/tmp_" + fileName + ".bizflow");
+		 * 
+		 * File inputFile = new File(oldFilePath); bizflowContent =
+		 * FileUtil.readFromFile(inputFile); if
+		 * (bizflowContent.getBizflowDiagram().equals("")) { InputStream
+		 * inputStream =
+		 * Activator.class.getResourceAsStream("/resources/Diagram.template");
+		 * int value = 0; StringBuffer buffer = new StringBuffer(); while
+		 * ((value = inputStream.read()) != -1) { buffer.append((char) value); }
+		 * FileOutputStream outputStream = new FileOutputStream(inputFile);
+		 * outputStream.write(buffer.toString().replace("<[[BizflowName]]>",
+		 * fileName).getBytes()); outputStream.flush(); outputStream.close();
+		 * bizflowContent = FileUtil.readFromFile(inputFile); }
+		 * 
+		 * FileOutputStream outputStream = new FileOutputStream(diagramFile);
+		 * outputStream.write(bizflowContent.getBizflowDiagram().getBytes());
+		 * outputStream.flush(); outputStream.close();
+		 * 
+		 * input = new URIEditorInput(URI.createFileURI(newDiagramPath)); }
+		 * catch (Exception e) { }
+		 */
 
 		super.init(site, diagramInput);
-
-	/*	BizFlowFeatureProvider featureProvider = ((BizFlowFeatureProvider) getDiagramTypeProvider()
-				.getFeatureProvider());
-
-		featureProvider.setGroupName(activeProject.getName());
-
 		
+		setPartName(bruleInput.getName() + " (Workflow)");
+
+		File modelFile = new File(UIConstants.datadir + bruleInput.getName() + "/" + bruleInput.getName() + ".mdl");
+		if (modelFile.exists()) {
+			BizflowModel bizflowModel = (BizflowModel) WorkflowEngine.getXStream().fromXML(modelFile);
+			WorkflowUtil.setDiagramModels(bizflowModel, getDiagramTypeProvider().getDiagram());
+		}
+
+		/*
+		 * BizFlowFeatureProvider featureProvider = ((BizFlowFeatureProvider)
+		 * getDiagramTypeProvider() .getFeatureProvider());
+		 * 
+		 * featureProvider.setGroupName(activeProject.getName());
+		 * 
+		 * 
 		 * ExcelFormulaContentProvider.getInstance()
 		 * .setStaticImportClassNames(buildConfiguration.
 		 * getStaticImportClassNames());
 		 * ActiveProjectUtil.registerBuildConfig(activeProject,
 		 * buildConfiguration);
-		 
-		URIConverter uriConverter = getEditingDomain().getResourceSet().getURIConverter();
-		InputStream inputStream = null;
-
-		if (uriConverter != null) {
-			try {
-				modelURI = currentURI;
-				String modelData = bizflowContent.getBizflowModel();
-				if (!modelData.trim().equals("")) {
-					inputStream = IOUtils.toInputStream(modelData);
-					BizflowModel bizflowModel = (BizflowModel) getXStream().fromXML(inputStream);
-
-					WorkflowUtil.setDiagramModels(bizflowModel, getDiagramTypeProvider().getDiagram());
-					inputStream.close();
-
-					URI baseURI = modelURI.trimSegments(1);
-
-					featureProvider.setBaseURI(baseURI);
-				}
-			} catch (IOException e) {
-				logger.error(e);
-			}
-		}*/
+		 * 
+		 * URIConverter uriConverter =
+		 * getEditingDomain().getResourceSet().getURIConverter(); InputStream
+		 * inputStream = null;
+		 * 
+		 * if (uriConverter != null) { try { modelURI = currentURI; String
+		 * modelData = bizflowContent.getBizflowModel(); if
+		 * (!modelData.trim().equals("")) { inputStream =
+		 * IOUtils.toInputStream(modelData); BizflowModel bizflowModel =
+		 * (BizflowModel) getXStream().fromXML(inputStream);
+		 * 
+		 * WorkflowUtil.setDiagramModels(bizflowModel,
+		 * getDiagramTypeProvider().getDiagram()); inputStream.close();
+		 * 
+		 * URI baseURI = modelURI.trimSegments(1);
+		 * 
+		 * featureProvider.setBaseURI(baseURI); } } catch (IOException e) {
+		 * logger.error(e); } }
+		 */
 
 		// listener to close all bizflow diagrams and bizflow compare
 		// editors before closing eclipse
@@ -260,21 +225,17 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 		if (resources != null && resources.size() > 0) {
 			resources.get(0).setModified(true);
 		}
+		String workflowName = getDiagramTypeProvider().getDiagram().getName();
 
 		final BizflowModel bizflowModel = WorkflowUtil.getDiagramModels(getDiagramTypeProvider().getDiagram());
 
-		bizflowContent.setBizflowModel(getXStream().toXML(bizflowModel));
+		bizflowContent.setBizflowModel(WorkflowEngine.getXStream().toXML(bizflowModel));
+
 
 		super.doSave(monitor);
 
-		File diagramFile = new File(newDiagramPath);
-		FileUtil.writeToFile(oldFilePath, diagramFile, bizflowContent.getBizflowModel());
-
-		if (activeProject == null) {
-			return;
-		}
-		final File modelAbsoluteFile = new File(oldFilePath);
-
+		String modelFileName = UIConstants.datadir + "/" + workflowName + "/" + workflowName + ".mdl";
+		FileUtil.writeToFile(new File(modelFileName), bizflowContent.getBizflowModel());
 		/*
 		 * final GenerateSourceCode generateSourceCode = new
 		 * GenerateSourceCode(callBack, logger) { public File
@@ -341,12 +302,6 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 		 * logger.error(ConsoleStreamUtil.getStackTrace(exception));
 		 * logger.error("Source code generation failed"); }
 		 */
-		try {
-			activeProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			logger.error(e);
-		}
-
 	}
 
 	protected String checkExistsOrNot(String stepName, String variableName, Map<String, Map<String, FieldInfo>> steps) {
@@ -376,25 +331,6 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 			}
 		}
 		super.dispose();
-	}
-
-	protected XStream getXStream() {
-		XStream stream = new XStream();
-		stream.alias("BizflowModel", BizflowModel.class);
-		stream.alias("StartStep", StartStep.class);
-		stream.alias("DecisionStep", DecisionStep.class);
-		stream.alias("ActivityStep", ActivityStep.class);
-		stream.alias("BusinessRuleStep", BusinessRuleStep.class);
-
-		stream.alias("SequenceLink", SequenceLink.class);
-		stream.alias("ConditionalLink", ConditionalLink.class);
-
-		stream.alias("BusinessRuleInfo", BusinessRuleInfo.class);
-		stream.alias("FieldInfo", FieldInfo.class);
-		//stream.alias("Message", Message.class);
-		stream.alias("CodeDetail", CodeDetail.class);
-
-		return stream;
 	}
 
 	@Override

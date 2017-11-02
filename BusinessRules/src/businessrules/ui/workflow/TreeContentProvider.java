@@ -22,7 +22,7 @@ public class TreeContentProvider implements ITreeContentProvider {
 				for(int index = 0; index < size ;index++) {
 					workflow[index] = new Workflow(allWorkflows.get(index));
 					workflow[index].setWorkflowConfigFile(UIConstants.datadir + allWorkflows.get(index) + "/"
-							+ allWorkflows.get(index) + ".diagram");
+							+ allWorkflows.get(index) + ".rules");
 				}
 				return workflow;
 			}
