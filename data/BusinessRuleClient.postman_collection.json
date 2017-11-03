@@ -1,0 +1,51 @@
+{
+	"variables": [],
+	"info": {
+		"name": "BusinessRuleClient",
+		"_postman_id": "3507a35c-c7ba-de86-58d5-e2b46e726d99",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "sucessful",
+			"request": {
+				"url": "http://127.0.0.1:8095/rule/prescreening",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"mti\":\"1200\",\r\n\"primaryAccountNumber\":\"5454540000054820\",\r\n\"processingCode\":\"000000\",\r\n\"amountTransaction\":\"000000010000\",\r\n\"tranmissionDate\":\"1101064708\",\r\n\"traceAuditNumber\":\"003977\", \r\n\"dateTimeLocalTransaction\":\"171101121708\",\r\n\"dateExpiration\":\"2512\",\r\n\"merchantType\":\"5999\",\r\n\"countryCodeAcquring\":\"356\",\r\n\"forwardingInstitution\":\"356\",\r\n\"pointOfServiceDataCode\":\"A01101200000\",\r\n\"functionCode\":\"200\",\r\n\"messageReasonCode\":\"0000\",\r\n\"acqInstitutionIdentificationCode\":\"001123\",\r\n\"forwardingInstitutionIdentificationCode\":\"001123\",\r\n\"track2Data\":\"5454540000054820=251260111234587111\",\r\n\"retrievalReferenceNumber\":\"730506003977\",\r\n\"serviceCode\":\"111\",\r\n\"cardAcceptorTerminalIdentification\":\"00880367\", \r\n\"cardAcceptorIdentificationCode\":\"000028100000088\",\r\n\"cardAcceptorName\":\"shoppersheetal         PUNE          IND\",\r\n\"currencyCodeTransaction\":\"356\",\r\n\"securityRelatedInformation\":\"00009900000000000011001123    00880367001\",\r\n\"reservedPrivateChequeDetails\":\"303033303832\",\r\n\"reservedForPrivateUserDeliveryChannelControllerId\":\"HYP\",\r\n\"reservedForPrivateUseTerminalType\": \"POS\"\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "stoplistedcurrency",
+			"request": {
+				"url": "http://127.0.0.1:8095/rule/prescreening",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"mti\":\"1200\",\r\n\"primaryAccountNumber\":\"5454540000054820\",\r\n\"processingCode\":\"000000\",\r\n\"amountTransaction\":\"000000010000\",\r\n\"tranmissionDate\":\"1101064708\",\r\n\"traceAuditNumber\":\"003977\", \r\n\"dateTimeLocalTransaction\":\"171101121708\",\r\n\"dateExpiration\":\"2512\",\r\n\"merchantType\":\"5999\",\r\n\"countryCodeAcquring\":\"356\",\r\n\"forwardingInstitution\":\"356\",\r\n\"pointOfServiceDataCode\":\"A01101200000\",\r\n\"functionCode\":\"200\",\r\n\"messageReasonCode\":\"0000\",\r\n\"acqInstitutionIdentificationCode\":\"001123\",\r\n\"forwardingInstitutionIdentificationCode\":\"001123\",\r\n\"track2Data\":\"5454540000054820=251260111234587111\",\r\n\"retrievalReferenceNumber\":\"730506003977\",\r\n\"serviceCode\":\"111\",\r\n\"cardAcceptorTerminalIdentification\":\"00880367\", \r\n\"cardAcceptorIdentificationCode\":\"000028100000088\",\r\n\"cardAcceptorName\":\"shoppersheetal         PUNE          IND\",\r\n\"currencyCodeTransaction\":\"586\",\r\n\"securityRelatedInformation\":\"00009900000000000011001123    00880367001\",\r\n\"reservedPrivateChequeDetails\":\"303033303832\",\r\n\"reservedForPrivateUserDeliveryChannelControllerId\":\"HYP\",\r\n\"reservedForPrivateUseTerminalType\": \"POS\"\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

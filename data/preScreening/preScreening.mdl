@@ -1,0 +1,156 @@
+<BizflowModel>
+  <steps>
+    <entry>
+      <string>BusinessRules</string>
+      <BusinessRuleStep>
+        <workflowName>BusinessRule</workflowName>
+        <name>BusinessRules</name>
+        <displayName>BusinessRules</displayName>
+        <description>BusinessRules</description>
+        <parameterInfos/>
+        <handleException>false</handleException>
+        <businessRuleInfos class="linked-hash-map">
+          <entry>
+            <string>cardnumber</string>
+            <list>
+              <BusinessRuleInfo>
+                <name>IsValidCardNumber</name>
+                <displayName>IsValidCardNumber</displayName>
+                <description>IsValidCardNumber</description>
+                <parameterInfos/>
+                <handleException>false</handleException>
+                <codeDetail>
+                  <className>IsValidCardNumber</className>
+                  <methodInfo>
+                    <name>doExecute</name>
+                    <isStatic>false</isStatic>
+                    <returnInfo>
+                      <name>Boolean</name>
+                      <dataType>java.lang.Boolean</dataType>
+                      <isArray>false</isArray>
+                      <isFieldReferenced>false</isFieldReferenced>
+                    </returnInfo>
+                  </methodInfo>
+                  <javaCode>
+import businessrulesruntime.core.engine.model.Message;
+import businessrulesruntime.core.engine.model.Context;
+import businessrulesruntime.core.engine.excel.ExcelFunctions;
+
+public class IsValidCardNumber extends ExcelFunctions{
+
+	 public Boolean doExecute(Message _message, Context _context){
+		return LUHN(_message.getPrimaryAccountNumber());
+	}
+
+}</javaCode>
+                  <excelFormula>LUHN(primaryAccountNumber)</excelFormula>
+                </codeDetail>
+                <ruleStartTime>1509701565673</ruleStartTime>
+              </BusinessRuleInfo>
+            </list>
+          </entry>
+          <entry>
+            <string>common</string>
+            <list>
+              <BusinessRuleInfo>
+                <name>NonZeroAmount</name>
+                <displayName>NonZeroAmount</displayName>
+                <description>NonZeroAmount</description>
+                <parameterInfos/>
+                <handleException>false</handleException>
+                <codeDetail>
+                  <className>NonZeroAmount</className>
+                  <methodInfo>
+                    <name>doExecute</name>
+                    <isStatic>false</isStatic>
+                    <returnInfo>
+                      <name>Boolean</name>
+                      <dataType>java.lang.Boolean</dataType>
+                      <isArray>false</isArray>
+                      <isFieldReferenced>false</isFieldReferenced>
+                    </returnInfo>
+                  </methodInfo>
+                  <javaCode>
+import businessrulesruntime.core.engine.model.Message;
+import businessrulesruntime.core.engine.model.Context;
+import businessrulesruntime.core.engine.excel.ExcelFunctions;
+
+public class NonZeroAmount extends ExcelFunctions{
+
+	 public Boolean doExecute(Message _message, Context _context){
+		return _message.getAmountTransaction() &gt; 0;
+	}
+
+}</javaCode>
+                  <excelFormula>amountTransaction &gt; 0</excelFormula>
+                </codeDetail>
+                <ruleStartTime>1509701072712</ruleStartTime>
+              </BusinessRuleInfo>
+              <BusinessRuleInfo>
+                <name>StopListCheck</name>
+                <displayName>StopListCheck</displayName>
+                <description>StopListCheck</description>
+                <parameterInfos/>
+                <handleException>false</handleException>
+                <codeDetail>
+                  <className>StopListCheck</className>
+                  <methodInfo>
+                    <name>doExecute</name>
+                    <isStatic>false</isStatic>
+                    <returnInfo>
+                      <name>Boolean</name>
+                      <dataType>java.lang.Boolean</dataType>
+                      <isArray>false</isArray>
+                      <isFieldReferenced>false</isFieldReferenced>
+                    </returnInfo>
+                  </methodInfo>
+                  <javaCode>
+import businessrulesruntime.core.engine.model.Message;
+import businessrulesruntime.core.engine.model.Context;
+import businessrulesruntime.core.engine.excel.ExcelFunctions;
+
+public class StopListCheck extends ExcelFunctions{
+
+	 public Boolean doExecute(Message _message, Context _context){
+		return NOT(INTFUN0(_message, _context));
+	}
+
+	public static boolean INTFUN0(Message _message, Context _context) {
+		 			return (EXACT(_message.getCountryCodeAcquring(),&quot;586&quot;)||EXACT(_message.getCurrencyCodeTransaction(),&quot;586&quot;));
+	}
+
+}</javaCode>
+                  <excelFormula>NOT(OR(EXACT(countryCodeAcquring, &quot;586&quot;), EXACT(currencyCodeTransaction, &quot;586&quot;)))</excelFormula>
+                </codeDetail>
+                <ruleStartTime>1509697812590</ruleStartTime>
+              </BusinessRuleInfo>
+            </list>
+          </entry>
+        </businessRuleInfos>
+      </BusinessRuleStep>
+    </entry>
+    <entry>
+      <string>Start</string>
+      <StartStep>
+        <workflowName>Bizflow</workflowName>
+        <name>Start</name>
+        <displayName>Start</displayName>
+        <parameterInfos/>
+        <handleException>false</handleException>
+      </StartStep>
+    </entry>
+  </steps>
+  <links>
+    <entry>
+      <string>Start_BusinessRules</string>
+      <SequenceLink>
+        <workflowName>Start_BusinessRules</workflowName>
+        <name>Start_BusinessRules</name>
+        <displayName>Start_BusinessRules</displayName>
+        <sourceStepId>Start</sourceStepId>
+        <targetStepId>BusinessRules</targetStepId>
+        <parameterInfos/>
+      </SequenceLink>
+    </entry>
+  </links>
+</BizflowModel>
