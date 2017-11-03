@@ -7,6 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import businessrulesruntime.core.engine.WorkflowEngine;
+import businessrulesruntime.core.engine.WorkflowResponse;
 import businessrulesruntime.core.engine.model.Context;
 import businessrulesruntime.core.engine.model.Message;
 
@@ -21,14 +22,23 @@ public class RuleTester {
 	@Produces({ "application/json" })
 	@Consumes({ "application/json" })
 	public BusinessRuleResponse prescreening(Message obj) {
-		System.out.println("received input msg object.");
 		Object executionResult = workFlowEngine.execute(obj, new Context());
 		BusinessRuleResponse response = new BusinessRuleResponse();
-		if (executionResult instanceof Boolean && (Boolean) executionResult) {
-			response.setSuccess("yes");
+		if (executionResult instanceof WorkflowResponse) {
+			WorkflowResponse workflowResponse = (WorkflowResponse) executionResult;
+			if(workflowResponse.isSuccess()){
+				response.setSuccess("yes");
+			} else {
+				response.setSuccess("no");
+				response.setError(workflowResponse.getFailureMessage());
+			}
 		} else {
-			response.setSuccess("no");
-			response.setError("Rule name - ");
+			if (executionResult instanceof Boolean && (Boolean) executionResult) {
+				response.setSuccess("yes");
+			} else {
+				response.setSuccess("no");
+				response.setError("Failed rule name - ");
+			}
 		}
 		return response;
 	}

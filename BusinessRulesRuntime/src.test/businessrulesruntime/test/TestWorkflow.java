@@ -10,7 +10,7 @@ public class TestWorkflow {
 		WorkflowEngine workflowEngine = new WorkflowEngine();
 		Message message = new Message();
 		message.setMti("1200");
-		message.setPrimaryAccountNumber("4887878788787877");
+		message.setPrimaryAccountNumber("5454540000054820");
 		Context context = new Context();
 		Object response = workflowEngine.execute(message, context);
 		if(response instanceof WorkflowResponse) {

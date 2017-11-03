@@ -88,6 +88,22 @@
     <systemDefined>true</systemDefined>
   </ExcelFunctionInfo>
   <ExcelFunctionInfo>
+    <name>LUHN</name>
+    <groupName>Standard</groupName>
+    <description>The LUHN function validates the card number.</description>
+    <syntax>LUHN(expression)</syntax>
+    <syntaxDescription>The LUHN function syntax has the following arguments:
+ expression-  It can be a constant or the fieldName, you want to validate.</syntaxDescription>
+    <example>LUHN(primaryAccountNumber)</example>
+    <exampleDescription>Returns true if number is as per Luhn algorithm.
+ LUHN(5454540000054820) returns true</exampleDescription>
+  <code></code>
+    <imports></imports>
+      <returnType></returnType>
+      <parameters></parameters>
+    <systemDefined>true</systemDefined>
+  </ExcelFunctionInfo>
+  <ExcelFunctionInfo>
     <name>SUBSTR</name>
     <groupName>Standard</groupName>
     <description>The SUBSTR function returns the substring of the value of the given fieldName or of the constant.

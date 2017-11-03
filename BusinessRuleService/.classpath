@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_79"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/aopalliance-repackaged-2.5.0-b05.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/BusinessRulesRuntime-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hk2-api-2.5.0-b05.jar"/>
@@ -42,5 +42,6 @@
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-vfs2-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
