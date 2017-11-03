@@ -17,14 +17,8 @@ import org.br.excel.exceldsl.excelDSL.JavaMethodCall;
 import org.br.excel.exceldsl.excelDSL.Primitive;
 import org.br.excel.exceldsl.excelDSL.Statement;
 import org.br.excel.exceldsl.excelDSL.Variable;
-import org.eclipse.core.internal.resources.BuildConfiguration;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 import businessrulesruntime.core.engine.FieldInfo;
 import businessrulesruntime.core.engine.codegen.CodeGenHelper;
