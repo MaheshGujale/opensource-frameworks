@@ -33,6 +33,7 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 
 	@Override
 	public Object doExecute(mT message, cT context) {
+		WorkflowResponse workflowResponse = new WorkflowResponse();
 		if (businessRuleInfos != null) {
 			try {
 				if (codeExecutors == null) {
@@ -52,7 +53,9 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 											&& ((Integer) returnValue).equals(new Integer(1)))) {
 								continue;
 							} else {
-								return false;
+								workflowResponse.setSuccess(false);
+								workflowResponse.setFailureMessage("Rule " + codeExecutor.getName() + " - failed");
+								return workflowResponse;
 							}
 						}
 					}
@@ -60,9 +63,9 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 			} catch (Exception e) {
 				logger.error(e);
 			}
-			return true;
+			workflowResponse.setSuccess(true);
 		}
-		return false;
+		return workflowResponse;
 	}
 
 	@SuppressWarnings("unused")
@@ -88,7 +91,7 @@ public class BusinessRuleStep<mT extends IMessage, cT extends IContext> extends 
 			List<BusinessRuleInfo<mT, cT>> businessRuleInfos = entry.getValue();
 			codeExecutorList = new ArrayList<CodeExecutor>();
 			for (BusinessRuleInfo<mT, cT> businessRuleInfo : businessRuleInfos) {
-				codeExecutor = new CodeExecutor(getName(), businessRuleInfo.getCodeDetail());
+				codeExecutor = new CodeExecutor(businessRuleInfo.getName(), businessRuleInfo.getCodeDetail());
 				codeExecutor.setStartTime(businessRuleInfo.getRuleStartTime());
 				codeExecutorList.add(codeExecutor);
 			}

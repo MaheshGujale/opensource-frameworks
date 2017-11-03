@@ -101,10 +101,11 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {		
 		DiagramEditorInput diagramInput = null;
-		BusinessRuleEditorInput bruleInput = (BusinessRuleEditorInput) input;
-		
+		final BusinessRuleEditorInput bruleInput = (BusinessRuleEditorInput) input;
+		setPartName(bruleInput.getName() + " (Workflow)");
+		fileName = bruleInput.getName();
 		String workflowFileName = bruleInput.getWorkflow().getWorkflowConfigFile();
 		Diagram diagram = null;
 		if (!new File(workflowFileName).exists()) {
@@ -171,8 +172,6 @@ public class BusinessRuleEditorPart extends DiagramEditor {
 		 */
 
 		super.init(site, diagramInput);
-		
-		setPartName(bruleInput.getName() + " (Workflow)");
 
 		File modelFile = new File(UIConstants.datadir + bruleInput.getName() + "/" + bruleInput.getName() + ".mdl");
 		if (modelFile.exists()) {

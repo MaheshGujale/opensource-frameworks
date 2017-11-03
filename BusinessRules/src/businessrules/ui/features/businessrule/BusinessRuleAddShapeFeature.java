@@ -220,8 +220,9 @@ public class BusinessRuleAddShapeFeature extends AbstractAddShapeFeature
 				}
 				String javaCode = codeDetail.getJavaCode().replace("${className}", "ExcelJavaCode");
 				List<String> allClassPaths = new ArrayList<>();
-				javaScriptHandler.loadClass("ExcelJavaCode", javaCode, true, allClassPaths);
-
+				String ruleName = businessRuleInfo.getName();
+				javaScriptHandler.loadClass(Character.toUpperCase(ruleName.charAt(0)) + ruleName.substring(1), javaCode,
+						true, allClassPaths);
 			}
 
 		}

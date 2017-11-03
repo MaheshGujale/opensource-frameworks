@@ -7,6 +7,13 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.vfs2.FileChangeEvent;
+import org.apache.commons.vfs2.FileListener;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileMonitor;
 import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
@@ -17,10 +24,31 @@ import businessrulesruntime.core.engine.util.WorkflowRuntimeUtil;
 public class WorkflowEngine {
 	private static final Logger LOGGER = Logger.getLogger(WorkflowEngine.class);
 	private IStep rootStep;
-	
+
 	public WorkflowEngine() {
-		objectizeWorkflow();
+		try {
+			String filePath = initialize();
+			objectizeWorkflow(filePath);
+		} catch (FileSystemException e) {
+			LOGGER.error(e);
+		}
 	}
+
+	DefaultFileMonitor fileMonitor = new DefaultFileMonitor(new FileListener() {
+
+		@Override
+		public void fileDeleted(FileChangeEvent arg0) throws Exception {
+		}
+
+		@Override
+		public void fileCreated(FileChangeEvent arg0) throws Exception {
+		}
+
+		@Override
+		public void fileChanged(FileChangeEvent arg0) throws Exception {
+			objectizeWorkflow(arg0.getFile().getURL().getFile());
+		}
+	});
 
 	public Object execute(IMessage message, IContext context) {
 		LOGGER.info("Executing workflow");
@@ -31,13 +59,23 @@ public class WorkflowEngine {
 		}
 	}
 
-	private void objectizeWorkflow() {
+	private String initialize() throws FileSystemException {
 		String filePath = System.getenv("businessrules.workflow.filepath");
 		if (filePath == null || "".equals(filePath)) {
 			throw new RuntimeException("businessrules.workflow.filepath is not provided in environment variable.");
 		}
+
+		FileSystemManager fsManager = VFS.getManager();
+		FileObject listendir = fsManager.resolveFile(filePath);
+		fileMonitor.setRecursive(true);
+		fileMonitor.addFile(listendir);
+		fileMonitor.start();
+		return filePath;
+	}
+
+	private void objectizeWorkflow(String filePath) {
 		List<BizflowModel> workflows = unZipModels(filePath);
-		if(workflows.size() > 0) {
+		if (!workflows.isEmpty()) {
 			rootStep = WorkflowRuntimeUtil.linkSteps(workflows.get(0));
 		}
 	}

@@ -29,6 +29,10 @@
                name="windowImages"
                value="icons/business_rules_16.png,icons/business_rules_32.png">
          </property>
+         <property
+               name="appName"
+               value="Business Rules">
+         </property>
       </product>
    </extension>
    <extension
@@ -69,8 +73,9 @@
          point="org.eclipse.ui.editors">
       <editor
             class="businessrules.ui.editor.BusinessRuleEditorPart"
-            default="true"
+            default="false"
             extensions="rules"
+            icon="icons/icon_workFlow.gif"
             id="businessrules.ui.workflow.editor.BusinessRuleEditor"
             name="Workflow">
       </editor>
@@ -79,6 +84,7 @@
          point="org.eclipse.ui.views">
       <view
             class="businessrules.ui.views.WorkflowView"
+            icon="icons/icon_workflowview.png"
             id="BusinessRules.workflow.view"
             name="Workflow Details"
             restorable="true">

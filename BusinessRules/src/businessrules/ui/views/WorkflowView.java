@@ -1,9 +1,19 @@
 package businessrules.ui.views;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -16,6 +26,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPage;
@@ -27,6 +39,7 @@ import businessrules.Activator;
 import businessrules.ui.dialog.AddWorkflowDialog;
 import businessrules.ui.editor.BusinessRuleEditorInput;
 import businessrules.ui.editor.BusinessRuleEditorPart;
+import businessrules.ui.utils.UIConstants;
 import businessrules.ui.workflow.TreeContentProvider;
 import businessrules.ui.workflow.TreeLabelProvider;
 import businessrules.ui.workflow.Workflow;
@@ -35,6 +48,8 @@ public class WorkflowView extends ViewPart {
 	public static final String ID = "BusinessRules.workflow.view";
 
 	private static final byte ADD_WORKFLOW = 1;
+	private static final byte DELETE_WORKFLOW = 2;
+	private static final byte EXPORT_WORKFLOWS = 3;
 
 	private TreeViewer treeViewer;
 	private TreeContentProvider treeContentProvider;
@@ -90,6 +105,9 @@ public class WorkflowView extends ViewPart {
 			if (obj != null) {
 				if (obj instanceof String) {
 					manager.add(addAction(ADD_WORKFLOW, new Workflow(), "Add Workflow"));
+				} else if (obj instanceof Workflow) {
+					manager.add(addAction(DELETE_WORKFLOW, obj, "Delete Workflow"));
+					manager.add(addAction(EXPORT_WORKFLOWS, obj, "Export Workflow"));
 				}
 			}
 		}
@@ -125,7 +143,15 @@ public class WorkflowView extends ViewPart {
 		switch (menuId) {
 
 		case ADD_WORKFLOW:
-			imageName = "icon_node.gif";
+			imageName = "icon_workFlow.gif";
+			break;
+
+		case DELETE_WORKFLOW:
+			imageName = "icon_delete.gif";
+			break;
+
+		case EXPORT_WORKFLOWS:
+			imageName = "Icon_Export.gif";
 			break;
 		}
 		return imageName;
@@ -147,6 +173,7 @@ public class WorkflowView extends ViewPart {
 		public void run() {
 			executeMenuAction(this, data);
 		}
+
 	}
 
 	public void executeMenuAction(MenuAction action, final Object data) {
@@ -156,10 +183,61 @@ public class WorkflowView extends ViewPart {
 
 		switch (menuId) {
 		case ADD_WORKFLOW: {
-			Workflow workflow = (Workflow) data;
 			AddWorkflowDialog workflowDialog = new AddWorkflowDialog(getSite().getShell(), null);
 			if (workflowDialog.open() == Window.OK) {
 				treeViewer.refresh();
+			}
+			break;
+		}
+		case DELETE_WORKFLOW: {
+			Workflow workflow = (Workflow) data;
+			if (workflow.getName() != null && MessageDialog.openConfirm(getSite().getShell(), "Confirm",
+					"Are you sure you want to delete '" + workflow.getName() + "'")) {
+				File workflowFolder = new File(UIConstants.datadir + workflow.getName());
+				File[] files = workflowFolder.listFiles();
+				for (File file : files) {
+					file.delete();
+				}
+				workflowFolder.delete();
+				treeViewer.refresh();
+			}
+			break;
+		}
+		case EXPORT_WORKFLOWS: {
+			Workflow workflow = (Workflow) data;
+			if (new File(workflow.getWorkflowConfigFile()).exists()) {
+				FileDialog saveDialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+				saveDialog.setFilterExtensions(new String[] { "*.zip" });
+				saveDialog.setFilterNames(new String[] { "Business Rules Files (*.zip)" });
+				saveDialog.setOverwrite(true);
+				saveDialog.setFileName(workflow.getName());
+				if (saveDialog.open() != null) {
+					String path = saveDialog.getFilterPath() + "\\" + saveDialog.getFileName();
+					FileOutputStream stream;
+					try {
+						stream = new FileOutputStream(path);
+						ZipOutputStream out = new ZipOutputStream(stream);
+						ZipEntry zipEntry = new ZipEntry(workflow.getName() + ".mdl");
+						out.putNextEntry(zipEntry);
+						InputStream inputStream = new FileInputStream(
+								UIConstants.datadir + workflow.getName() + "/" + workflow.getName() + ".mdl");
+						int len;
+						byte[] buffer = new byte[1024];
+						while ((len = inputStream.read(buffer)) > 0) {
+							out.write(buffer);
+						}
+						inputStream.close();
+						out.closeEntry();
+						out.close();
+						stream.close();
+						MessageDialog.openInformation(getSite().getShell(), "Success", "Workflow exported successfully!");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			} else {
+				MessageDialog.openWarning(getSite().getShell(), "Warning", "Workflow is not created");
 			}
 			break;
 		}
