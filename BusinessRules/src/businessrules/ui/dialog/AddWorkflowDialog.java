@@ -46,7 +46,7 @@ public class AddWorkflowDialog extends TitleAreaDialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(375, 182);
+		return new Point(396, 227);
 	}
 
 	@Override
